@@ -28,14 +28,19 @@ def load_data(root='data/CroppedYaleB', reduce=4):
         
     """ 
     images, labels = [], []
-    if root=='data/ORL':
+    
+    # spilt the input string into tokens and retrive the dataset
+    token = root.split('/')
+    dataset = token[len(token) - 1] 
+    
+    if root=='ORL':
         wdth = 92 
         hght = 112
         left = 0
         right = 92
         top = 10
         bottom = 102
-    elif root=='data/CroppedYaleB':
+    elif root=='CroppedYaleB':
         wdth = 168 
         hght = 192
         left = 0
