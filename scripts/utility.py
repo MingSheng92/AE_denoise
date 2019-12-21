@@ -33,14 +33,14 @@ def load_data(root='data/CroppedYaleB', reduce=4):
     token = root.split('/')
     dataset = token[len(token) - 1] 
     
-    if root=='ORL':
+    if dataset=='ORL':
         wdth = 92 
         hght = 112
         left = 0
         right = 92
         top = 10
         bottom = 102
-    elif root=='CroppedYaleB':
+    elif dataset=='CroppedYaleB':
         wdth = 168 
         hght = 192
         left = 0
