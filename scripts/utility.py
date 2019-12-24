@@ -102,7 +102,7 @@ def faceGrid(num, img_arr, img_shape, offset):
 	plt.suptitle(title, size=16)
 	for i in range(num):
     		ax = plt.subplot(1, num, i+1)
-    		plt.imshow(x_train[i*offset].reshape(img_size))
+    		plt.imshow(img_arr[i*offset].reshape(img_size))
     		plt.gray()
     		ax.get_xaxis().set_visible(False)
     		ax.get_yaxis().set_visible(False)
