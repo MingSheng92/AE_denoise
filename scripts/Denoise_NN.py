@@ -24,16 +24,30 @@ def createModel(img_size):
     input_layer = Input(shape=(img_size[0], img_size[1], 1))
 
     x = Conv2D(64, (5, 5), activation='relu', padding='same')(input_layer)
-    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(64, (5, 5), activation='relu', padding='same')(x)
+    x = Conv2D(64, (5, 5), activation='relu', padding='same')(x)
+    x = Dropout(0.1)(x)
     x = BatchNormalization(input_shape=(img_size[0], img_size[1], 1))(x)
 
-    x = Dropout(0.8, name='Dropout')(x)
+    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+    x = Dropout(0.1)(x)
+    x = BatchNormalization(input_shape=(img_size[0], img_size[1], 1))(x)
+
+    x = Dropout(0.4)(x)
 
     x = Conv2DTranspose(32, (3, 3), activation='relu', padding='same')(x)
-    x = Conv2DTranspose(64, (5, 5), activation='relu', padding='same')(x)
+    x = Conv2DTranspose(32, (3, 3), activation='relu', padding='same')(x)
+    x = Dropout(0.1)(x)
     x = BatchNormalization(input_shape=(img_size[0], img_size[1], 1))(x)
 
-    output = Conv2D(1, (1, 1), padding='same')(x)
+    x = Conv2DTranspose(64, (5, 5), activation='relu', padding='same')(x)
+    x = Conv2DTranspose(64, (5, 5), activation='relu', padding='same')(x)
+    x = Conv2DTranspose(64, (5, 5), activation='relu', padding='same')(x)
+    x = Dropout(0.1)(x)
+    x = BatchNormalization(input_shape=(img_size[0], img_size[1], 1))(x)
+
+    output = Conv2D(1, (1, 1), activation='hard_sigmoid', padding='same')(x)
 
     NN_model = Model(input_layer, output)
     adam = Adam(lr=1e-3)
