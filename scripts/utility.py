@@ -77,7 +77,7 @@ def load_data(root='data/CroppedYaleB', reduce=4):
                 top = 0 + gap
                 bottom = h - gap
             
-            # TODO: preprocessing.
+            # crop image into square
             img = img.crop((left, top, right, bottom))
             img_size = img.size
             
@@ -96,17 +96,18 @@ def load_data(root='data/CroppedYaleB', reduce=4):
     return images, labels, img_size
 	
 # visualize the first n 
-def faceGrid(num, img_arr, img_shape):
+def faceGrid(num, img_arr, img_shape, offset):
 	title = "First %d faces of the dataset" % num
-	# Let's show some centered faces
 	plt.figure(figsize=(20, 2))
 	plt.suptitle(title, size=16)
 	for i in range(num):
-		plt.subplot(1, num, i+1)
-		plt.imshow(img_arr[:,i * 10].reshape(img_shape), cmap=plt.cm.gray)
-		plt.xticks(())
-		plt.yticks(())
-		
+    		ax = plt.subplot(1, n, i+1)
+    		plt.imshow(x_train[i*offset].reshape(img_size))
+    		plt.gray()
+    		ax.get_xaxis().set_visible(False)
+    		ax.get_yaxis().set_visible(False)
+	plt.show()
+
 def ResultGrid(num_person, con_img, rec_img, img_shape):
     plt.figure(figsize=(5, 11))
     plt.suptitle("Noise(left) and denoised face(right)", size=16)
