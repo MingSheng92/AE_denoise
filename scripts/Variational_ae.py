@@ -74,7 +74,7 @@ class VAE(object):
         
         self.VAE = Model(inputs, outputs, name='vae_mlp')
         
-        if loss = 'mse':
+        if loss == 'mse':
             reconstruction_loss = mse(inputs, outputs)
         elif loss = 'cross_entropy':
              reconstruction_loss = binary_crossentropy(inputs, outputs)
