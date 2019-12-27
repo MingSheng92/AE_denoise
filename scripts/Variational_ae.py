@@ -76,7 +76,7 @@ class VAE(object):
         
         if loss == 'mse':
             reconstruction_loss = mse(inputs, outputs)
-        elif loss = 'cross_entropy':
+        elif loss == 'cross_entropy':
              reconstruction_loss = binary_crossentropy(inputs, outputs)
         else:
             raise ValueError('Loss selected not found...')
