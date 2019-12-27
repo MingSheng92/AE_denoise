@@ -100,7 +100,7 @@ class VAE(object):
         if dsp_type == "spec":
             self.encoder.summary()
         elif dsp_type == "image":
-        plot_model(self.encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
+            plot_model(self.encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
         
     def get_decoder(self, dsp_type):
         if dsp_type == "spec":
