@@ -42,9 +42,9 @@ class VAE(object):
         self.epochs = epochs
         self.encoder = None
         self.decoder = None
-        self.VAE = None
+        self.VAE_model = None
     
-    def encoder(self):
+    def instantiate_encoder(self):
         # build encoder model
         inputs = Input(shape=self.input_shape, name='encoder_input')
         x = Dense(intermediate_dim, activation='relu')(inputs)
@@ -58,7 +58,7 @@ class VAE(object):
         # instantiate encoder model
         self.encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
         
-    def decoder(self):
+    def instantiate_decoder(self):
         # build decoder model
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
         x = Dense(intermediate_dim, activation='relu')(latent_inputs)
@@ -68,15 +68,15 @@ class VAE(object):
         self.decoder = Model(latent_inputs, outputs, name='decoder')
         
     # instantiate VAE model
-    def build_VAE(self, loss='mse'):
+    def instantiate_VAE(self, loss='mse'):
         inputs = Input(shape=self.input_shape, name='encoder_input')
         outputs = self.decoder(self.encoder(inputs)[2])
         
-        self.VAE = Model(inputs, outputs, name='vae_mlp')
+        self.VAE_model = Model(inputs, outputs, name='vae_mlp')
         
         if loss == 'mse':
             reconstruction_loss = mse(inputs, outputs)
-        elif loss == 'cross_entropy':
+        elif loss = 'cross_entropy':
              reconstruction_loss = binary_crossentropy(inputs, outputs)
         else:
             raise ValueError('Loss selected not found...')
@@ -86,8 +86,8 @@ class VAE(object):
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
         vae_loss = K.mean(reconstruction_loss + kl_loss)
-        self.VAE.add_loss(vae_loss)
-        self.VAE.compile(optimizer='adam')
+        self.VAE_model.add_loss(vae_loss)
+        self.VAE_model.compile(optimizer='adam')
     
     def fit(self, x_train, x_test):
         # train the autoencoder
@@ -110,6 +110,6 @@ class VAE(object):
             
     def get_VAE(self, dsp_type):
         if dsp_type == "spec":
-            self.VAE.summary()
+            self.VAE_model.summary()
         elif dsp_type == "image":
-            plot_model(self.VAE, to_file='vae.png', show_shapes=True)
+            plot_model(self.VAE_model, to_file='vae.png', show_shapes=True)
