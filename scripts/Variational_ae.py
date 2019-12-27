@@ -35,6 +35,7 @@ def sampling(args):
 class VAE(object):
     # initialize class value for later processing purpose
     def __init__(self, original_dim, intermediate_dim, latent_dim, batch_size=128, epochs=50):
+        self.original_dim = original_dim
         self.input_shape = (original_dim, )
         self.intermediate_dim = intermediate_dim
         self.latent_dim = latent_dim
@@ -44,7 +45,7 @@ class VAE(object):
         self.decoder = None
         self.VAE_model = None
     
-    def instantiate_encoder(self):
+    def instantiate_VAE(self, loss='mse'):
         # build encoder model
         inputs = Input(shape=self.input_shape, name='encoder_input')
         x = Dense(self.intermediate_dim, activation='relu')(inputs)
@@ -57,19 +58,16 @@ class VAE(object):
 
         # instantiate encoder model
         self.encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
-        
-    def instantiate_decoder(self):
+
         # build decoder model
-        latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(intermediate_dim, activation='relu')(latent_inputs)
-        outputs = Dense(original_dim, activation='sigmoid')(x)
+        latent_inputs = Input(shape=(self.latent_dim,), name='z_sampling')
+        x = Dense(self.intermediate_dim, activation='relu')(latent_inputs)
+        outputs = Dense(self.original_dim, activation='sigmoid')(x)
 
         # instantiate decoder model
         self.decoder = Model(latent_inputs, outputs, name='decoder')
         
-    # instantiate VAE model
-    def instantiate_VAE(self, loss='mse'):
-        inputs = Input(shape=self.input_shape, name='encoder_input')
+        # instantiate VAE model
         outputs = self.decoder(self.encoder(inputs)[2])
         
         self.VAE_model = Model(inputs, outputs, name='vae_mlp')
@@ -81,7 +79,7 @@ class VAE(object):
         else:
             raise ValueError('Loss selected not found...')
             
-        reconstruction_loss *= original_dim
+        reconstruction_loss *= self.original_dim
         kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
@@ -89,11 +87,11 @@ class VAE(object):
         self.VAE_model.add_loss(vae_loss)
         self.VAE_model.compile(optimizer='adam')
     
-    def fit(self, x_train, x_test):
+    def _fit(self, x_train, x_test):
         # train the autoencoder
-        self.VAE.fit(x_train,
-            epochs=epochs,
-            batch_size=batch_size,
+        self.VAE_model.fit(x_train,
+            epochs=self.epochs,
+            batch_size=self.batch_size,
             validation_data=(x_test, None))
     
     def get_encoder(self, dsp_type):
